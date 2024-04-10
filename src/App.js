@@ -11,15 +11,20 @@ function App() {
         product
     );
 
-    let [selectProduct, setSelectProduct] = useState(
-        0
-    );
-
     let navigate = useNavigate();
 
-    const clickProduct = (i) => {
-        setSelectProduct(i);
-        navigate('/detail');
+    const sortBtn = () => {
+        let copy = [...productData];
+        copy = copy.sort((a, b) => {
+            let firstData = a.productName.toLowerCase();
+            let secondData = b.productName.toLowerCase();
+
+            return firstData < secondData ? -1 : firstData > secondData ? 1 : 0;
+
+        });
+
+        setProduct(copy);
+
     }
 
     return (
@@ -37,25 +42,22 @@ function App() {
                 </Container>
             </Navbar>
 
-
             <Routes>
                 <Route path="/" element={
                     <>
                         <div className="main-bg" style={{backgroundImage: 'url(' + bgImage + ')'}}>
                         </div>
+                        <button onClick={() => sortBtn()}>sort</button>
                         <div className="Container">
-                            <div className="row" style={{display: 'flex'}}>
+                            <div className="row">
                                 {
                                     productData.map((content, i) => {
-                                        return(
-                                            <>
-                                                <div style={{width: '30%'}} onClick={() => clickProduct(i)}>
-                                                    <ProductComponent
-                                                        propducts={productData[i]}
-                                                        onClick={() => clickProduct(i)}
-                                                    />
-                                                </div>
-                                            </>
+                                        return (
+                                            <div className="col-md-4" key={i} onClick={() => navigate('/detail/' + productData[i].id)}>
+                                                <HomeComponent
+                                                    products={productData[i]}
+                                                />
+                                            </div>
                                         )
                                     })
                                 }
@@ -63,18 +65,15 @@ function App() {
                         </div>
                     </>
                 }/>
-                <Route path="/detail" element={
-                    <>
-                        <ProductDetailComponent
-                            product={productData[selectProduct]}/>
-                    </>
+                <Route path="/detail/:id" element={
+                    <ProductDetailComponent product={productData}/>
                 }/>
-                <Route path="/about" element={ <About/> }>
+                <Route path="/about" element={<About/>}>
                     <Route path="member" element={<div>멤버임</div>}/>
                     <Route path="location" element={<div>위치임</div>}/>
                 </Route>
 
-                <Route path="/event" element={ <Event/> }>
+                <Route path="/event" element={<Event/>}>
                     <Route path="one" element={<div>첫 주문시 양배추즙 서비스</div>}></Route>
                     <Route path="two" element={<div>생일기념 쿠폰받기</div>}></Route>
                 </Route>
@@ -89,14 +88,14 @@ function App() {
     );
 }
 
-function ProductComponent(props) {
+function HomeComponent(props) {
 
     return (
-        <div className="col-md-4">
-            <img src={props.propducts.imgSrc} width="80%"/>
-            <h4>{props.propducts.productName}</h4>
-            <p>{props.propducts.productDes}</p>
-            <p>{props.propducts.price}$</p>
+        <div>
+            <img src={props.products.imgSrc} width="80%"/>
+            <h4>{props.products.productName}</h4>
+            <p>{props.products.productDes}</p>
+            <p>{props.products.price}$</p>
         </div>
     )
 
