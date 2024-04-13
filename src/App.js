@@ -1,16 +1,20 @@
 import './App.css';
 import {Button, Navbar, Container, Nav} from "react-bootstrap";
 import bgImage from "./bg.png";
-import {useState} from "react";
+import {createContext, useState} from "react";
 import product from "./data";
 import {Routes, Route, useNavigate, Outlet} from "react-router-dom"
 import ProductDetailComponent from "./routes/ProductDetailComponent";
 import axios from "axios";
 
+export let Context1 = createContext();
+
 function App() {
     let [productData, setProduct] = useState(
         product
     );
+
+    let [stock, setStock] = useState([10, 11, 12]);
 
     let navigate = useNavigate();
 
@@ -134,7 +138,9 @@ function App() {
                     </>
                 }/>
                 <Route path="/detail/:id" element={
-                    <ProductDetailComponent product={productData}/>
+                    <Context1.Provider value={{stock}}>
+                        <ProductDetailComponent product={productData}/>
+                    </Context1.Provider>
                 }/>
                 <Route path="/about" element={<About/>}>
                     <Route path="member" element={<div>멤버임</div>}/>
