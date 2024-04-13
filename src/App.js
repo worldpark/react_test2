@@ -5,6 +5,7 @@ import {useState} from "react";
 import product from "./data";
 import {Routes, Route, useNavigate, Outlet} from "react-router-dom"
 import ProductDetailComponent from "./routes/ProductDetailComponent";
+import axios from "axios";
 
 function App() {
     let [productData, setProduct] = useState(
@@ -26,6 +27,10 @@ function App() {
         setProduct(copy);
 
     }
+
+    let [buttonClickCount, setButtonClickCount] = useState(0);
+    let [buttonVisible, setButtonVisible] = useState(true);
+    let [loadingVisible, setLoadingVisible] = useState(false);
 
     return (
         <div className="App">
@@ -53,7 +58,8 @@ function App() {
                                 {
                                     productData.map((content, i) => {
                                         return (
-                                            <div className="col-md-4" key={i} onClick={() => navigate('/detail/' + productData[i].id)}>
+                                            <div className="col-md-4" key={i}
+                                                 onClick={() => navigate('/detail/' + productData[i].id)}>
                                                 <HomeComponent
                                                     products={productData[i]}
                                                 />
@@ -63,6 +69,68 @@ function App() {
                                 }
                             </div>
                         </div>
+                        {
+                            buttonVisible ?
+                                loadingVisible ?
+                                    <div>
+                                        로딩중...
+                                    </div> :
+                                    <button onClick={() => {
+                                        setLoadingVisible(true);
+
+                                        if (buttonClickCount == 0) {
+                                            axios.get('https://codingapple1.github.io/shop/data2.json')
+                                                .then((response) => {
+
+                                                    let resData = response.data;
+                                                    for (let i = 0; i < resData.length; i++) {
+                                                        resData[i].imgSrc = 'https://codingapple1.github.io/shop/shoes1.jpg';
+                                                        resData[i].productName = resData[i].title;
+                                                        resData[i].productDes = resData[i].content;
+                                                    }
+
+                                                    let copy = [
+                                                        ...productData,
+                                                        ...resData];
+
+                                                    setProduct(copy);
+                                                    setLoadingVisible(false);
+                                                })
+                                                .catch((error) => {
+                                                    console.log(error);
+                                                    setLoadingVisible(false);
+                                                })
+                                        } else if (buttonClickCount == 1) {
+                                            axios.get('https://codingapple1.github.io/shop/data3.json')
+                                                .then((response) => {
+
+                                                    let resData = response.data;
+                                                    for (let i = 0; i < resData.length; i++) {
+                                                        resData[i].imgSrc = 'https://codingapple1.github.io/shop/shoes1.jpg';
+                                                        resData[i].productName = resData[i].title;
+                                                        resData[i].productDes = resData[i].content;
+                                                    }
+
+                                                    let copy = [
+                                                        ...productData,
+                                                        ...resData];
+
+                                                    setProduct(copy);
+                                                    setLoadingVisible(false);
+                                                })
+                                                .catch((error) => {
+                                                    console.log(error);
+                                                    setLoadingVisible(false);
+                                                })
+                                            setButtonVisible(false);
+                                        }
+
+                                        setButtonClickCount(buttonClickCount + 1);
+                                    }}>
+                                        더보기
+                                    </button> : null
+                        }
+
                     </>
                 }/>
                 <Route path="/detail/:id" element={

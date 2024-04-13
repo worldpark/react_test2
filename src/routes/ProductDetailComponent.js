@@ -10,13 +10,13 @@ let YellowBtn = styled.button`
 
 function ProductDetailComponent(props) {
 
-    let [divVisable, setDivVisable] = useState(true);
+    let [divVisible, setDivVisible] = useState(true);
     let [count, setCount] = useState(0);
 
     //mounted, updated // deps 넣을시 mounted
     useEffect(() => {
         let timer = setTimeout(() =>{
-            setDivVisable(false);
+            setDivVisible(false);
         }, 2000);
 
         //unmounted, created? mounted 이전
@@ -52,7 +52,7 @@ function ProductDetailComponent(props) {
     return (
         <div className="container">
             {
-                divVisable ?
+                divVisible ?
                 <div className="alert alert-warning">
                     2초이내 구매시 할인
                 </div> : null
