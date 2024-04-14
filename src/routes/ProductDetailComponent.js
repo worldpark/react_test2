@@ -4,6 +4,8 @@ import {useContext, useEffect, useState} from "react";
 import {Nav} from "react-bootstrap";
 import './../App.css';
 import {Context1} from './../App';
+import {useDispatch, useSelector} from "react-redux";
+import {setProduct} from "../store";
 
 let YellowBtn = styled.button`
     background: ${props => props.bg};
@@ -70,6 +72,18 @@ function ProductDetailComponent(props) {
 
     }, [id]);
 
+    let dispatch = useDispatch();
+
+    const addCart = () => {
+        let addCartContent = {
+            id: selectProduct.id,
+            name: selectProduct.productName,
+            count: 1,
+        }
+
+        dispatch(setProduct(addCartContent));
+    }
+
     return (
         <div className={'start ' + fade}>
             <div className={'container'}>
@@ -97,7 +111,7 @@ function ProductDetailComponent(props) {
                                 <h4 className="pt-5">{selectProduct.productName}</h4>
                                 <p>{selectProduct.productDes}</p>
                                 <p>{selectProduct.price}</p>
-                                <button className="btn btn-danger">주문하기</button>
+                                <button className="btn btn-danger" onClick={() => addCart()}>주문하기</button>
                             </div>
                         </div>
                 }
@@ -142,10 +156,24 @@ const TabContent = ({tab}) => {
         }
     }, [tab]);
 
+    let cart = useSelector((state) => state.cart);
+
     return (
         <div className={'start ' + fade}>
             {
-                [<div>내용0{stock[0]}</div>, <div>내용1</div>, <div>내용2</div>][tab]
+                [
+                    <div>내용0{stock[0]}</div>,
+                    <div>
+                        {
+                            cart.map((content, i) =>
+                                <div>
+                                    {cart[i].name}
+                                </div>
+                            )
+                        }
+                    </div>,
+                    <div>내용2</div>
+                ][tab]
             }
         </div>
     )
