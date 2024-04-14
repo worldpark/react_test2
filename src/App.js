@@ -7,6 +7,7 @@ import {Routes, Route, useNavigate, Outlet, json} from "react-router-dom"
 import ProductDetailComponent from "./routes/ProductDetailComponent";
 import axios from "axios";
 import Cart from "./routes/Cart";
+import {useQuery} from "react-query";
 
 export let Context1 = createContext();
 
@@ -38,10 +39,18 @@ function App() {
     let [buttonVisible, setButtonVisible] = useState(true);
     let [loadingVisible, setLoadingVisible] = useState(false);
 
+    let result = useQuery('user', () =>
+        axios.get('https://codingapple1.github.io/userdata.json')
+            .then((response) => {
+                return response.data;
+            }),
+        {staleTime: 2000}
+    )
+
     return (
         <div className="App">
 
-            <Navbar bg="dark" data-bs-theme="dark">
+            <Navbar bg="light" variant="light">
                 <Container>
                     <Navbar.Brand href="/">리액트 공부중</Navbar.Brand>
                     <Nav className="me-auto">
@@ -50,7 +59,11 @@ function App() {
                         <Nav.Link href="/about">About</Nav.Link>
                         <Nav.Link href="/event">Event</Nav.Link>
                         <Nav.Link href="/cart">Cart</Nav.Link>
-
+                    </Nav>
+                    <Nav className="ms-auto">
+                        {result.isLoading && '로딩중'}
+                        {result.error && '에러남'}
+                        {result.data && result.data.name}
                     </Nav>
                 </Container>
             </Navbar>

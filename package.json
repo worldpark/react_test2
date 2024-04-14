@@ -16,7 +16,8 @@
     "axios": "latest",
     "react-redux": "latest",
     "@reduxjs/toolkit": "latest",
-    "redux-persist": "latest"
+    "redux-persist": "latest",
+    "react-query": "latest"
   },
   "scripts": {
     "start": "react-scripts start",
