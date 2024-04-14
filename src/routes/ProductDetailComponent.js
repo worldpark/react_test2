@@ -22,8 +22,32 @@ function ProductDetailComponent(props) {
 
     let [tab, setTab] = useState(0);
 
+
+    let {id} = useParams();
+
+    const findProduct = (element) => {
+
+        return element.id == id;
+    }
+
+    const selectProduct = props.product.find(findProduct);
+
+
     //mounted, updated // deps 넣을시 mounted, watch?
     useEffect(() => {
+        if(localStorage.getItem('watched') == null){
+            localStorage.setItem('watched', JSON.stringify([]));
+        }
+
+        let watched = JSON.parse(localStorage.getItem('watched'));
+
+        watched.push(selectProduct.id);
+
+        const setWatch = new Set(watched);
+        const arrWatch = [...setWatch];
+
+        localStorage.setItem('watched', JSON.stringify(arrWatch));
+
         let timer = setTimeout(() =>{
             setDivVisible(false);
         }, 2000);
@@ -47,15 +71,6 @@ function ProductDetailComponent(props) {
             setQuantityError(false);
         }
     }, [quantity])
-
-    let {id} = useParams();
-
-    const findProduct = (element) => {
-
-        return element.id == id;
-    }
-
-    const selectProduct = props.product.find(findProduct);
 
     const [fade, setFade] = useState('');
 
@@ -163,14 +178,7 @@ const TabContent = ({tab}) => {
             {
                 [
                     <div>내용0{stock[0]}</div>,
-                    <div>
-                        {
-                            cart.map((content, i) =>
-                                <div>
-                                    {cart[i].name}
-                                </div>
-                            )
-                        }
+                    <div>내용1
                     </div>,
                     <div>내용2</div>
                 ][tab]

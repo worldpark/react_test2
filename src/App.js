@@ -3,7 +3,7 @@ import {Button, Navbar, Container, Nav} from "react-bootstrap";
 import bgImage from "./bg.png";
 import {createContext, useState} from "react";
 import product from "./data";
-import {Routes, Route, useNavigate, Outlet} from "react-router-dom"
+import {Routes, Route, useNavigate, Outlet, json} from "react-router-dom"
 import ProductDetailComponent from "./routes/ProductDetailComponent";
 import axios from "axios";
 import Cart from "./routes/Cart";
@@ -11,6 +11,7 @@ import Cart from "./routes/Cart";
 export let Context1 = createContext();
 
 function App() {
+
     let [productData, setProduct] = useState(
         product
     );
