@@ -1,5 +1,9 @@
-import {configureStore, createSlice} from '@reduxjs/toolkit';
+import {combineReducers, configureStore, createSlice, getDefaultMiddleware} from '@reduxjs/toolkit';
 import user from "./store/userSlice";
+import {persistReducer, persistStore} from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import {thunk} from "redux-thunk";
+import logger from "redux-logger";
 
 
 let cart = createSlice({
@@ -22,11 +26,25 @@ let cart = createSlice({
     }
 })
 
+const reducers = combineReducers({
+    user: user.reducer,
+    cart: cart.reducer
+});
+
+const persistConfig = {
+    key: 'root',
+    storage,
+    whitelist: ['user']
+}
+
+const persistedReducer = persistReducer(persistConfig, reducers);
+
 export let {setCount, setProduct} = cart.actions;
 
-export default configureStore({
-    reducer: {
-        user: user.reducer,
-        cart: cart.reducer
-    }
+export const store = configureStore({
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+        serializableCheck: false
+    })
 })
+export const persistor = persistStore(store);
